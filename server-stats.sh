@@ -21,8 +21,8 @@ cpu_utilization() {
 
     percentage=$(awk "BEGIN {printf \"%.2f\", $total_percentage / $cpu_count}")
 
-    printf "${Cyan}CPU${Color_Off}"
-    echo_progress_bar $percentage
+    printf " ${Cyan}CPU${Color_Off}"
+    echo_progress_bar "$percentage"
 }
 
 mem_utilization() {
@@ -31,16 +31,33 @@ mem_utilization() {
     available=$(awk '/MemAvailable/ {print $2"K"}' /proc/meminfo | numfmt --from=iec --to=iec-i)
     total=$(awk '/MemTotal/ {print $2"K"}' /proc/meminfo | numfmt --from=iec --to=iec-i)
 
-    printf "${Cyan}RAM${Color_Off}"
+    printf " ${Cyan}RAM${Color_Off}"
     echo_progress_bar "$percentage"
     printf " ${Cyan}Available $White$available ${Cyan}Total $White$total$Color_Off"
+}
+
+disk_usage() {
+    available=$(df -h / --output=avail | tail -n 1)
+    percentage=$(df -h / --output=pcent | tail -n 1 | sed 's/%//g')
+    used=$(df -h / --output=used | tail -n 1)
+    printf "${Cyan}DISK${Color_Off}"
+    echo_progress_bar "$percentage"
+    printf " ${Cyan}Available $White$available ${Cyan}Used $White$used$Color_Off"
 }
 
 echo_progress_bar() {
     percentage=$(printf '%.0f\n' $1)
     bar_count=$((percentage / 2))
 
-    printf "$White[$Green"
+    if [ $bar_count -lt 35 ]; then
+        color=$Green
+    elif [ $bar_count -lt 45 ]; then
+        color=$Yellow
+    else
+        color=$Red
+    fi
+
+    printf "$White[$color"
     printf '%*s' "$bar_count" '' | tr ' ' '|'
     printf '%*s' $((50 - bar_count)) ' '
     printf "$DarkGray$percentage%%$White]$Color_Off"
@@ -49,4 +66,6 @@ echo_progress_bar() {
 cpu_utilization
 printf "\n"
 mem_utilization
+printf "\n"
+disk_usage
 printf "\n"
