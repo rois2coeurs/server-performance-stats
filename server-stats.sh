@@ -55,7 +55,7 @@ top_5_process_mem() {
 
 echo_top_5_process_side_by_side() {
     printf "${Cyan}%-36s %-36s${Color_Off}\n" "Top 5 CPU Processes" "Top 5 RAM Processes"
-    paste <(top_5_process_cpu) <(top_5_process_mem) | awk '{ printf "%-6s %-30s %-6s %-30s\n", " "$1"%", $2, $3"%", $4 }'
+    paste <(top_5_process_cpu) <(top_5_process_mem) | awk '{ printf "%-7s %-29s %-6s %-30s\n", " "$1"%", $2, $3"%", $4 }'
 }
 
 echo_progress_bar() {
