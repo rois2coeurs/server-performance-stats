@@ -71,6 +71,12 @@ echo_top_5_process_side_by_side() {
     paste <(top_5_process_cpu) <(top_5_process_mem) | awk '{ printf "%-7s %-29s %-6s %-30s\n", " "$1"%", $2, $3"%", $4 }'
 }
 
+echo_current_users() {
+    users=$(who | wc -l)
+    printf "${Cyan}%-36s${Color_Off}\n" "Current Users"
+    printf "%-7s %-29s\n" " $users", "$(who | awk '{print $1}' | sort | uniq)"
+}
+
 echo_progress_bar() {
     percentage=$(printf '%.0f\n' $1)
     bar_count=$((percentage / 2))
@@ -98,6 +104,7 @@ usage() {
     echo "  -t, --top       Show top 5 processes by CPU and memory usage side by side"
     echo "  --top_ram       Show top 5 processes by memory usage"
     echo "  --top_cpu       Show top 5 processes by CPU usage"
+    echo "  -u, --users     Show current users"
     echo "  -h, --help      Show this help message"
 }
 
@@ -107,6 +114,7 @@ if [ $# -eq 0 ]; then
     disk_usage
     printf "\n"
     echo_top_5_process_side_by_side
+    echo_current_users
 fi
 
 while [ $# -gt 0 ]; do
@@ -128,6 +136,9 @@ while [ $# -gt 0 ]; do
             ;;
         --top_cpu)
             echo_top_5_process_cpu
+            ;;
+        -u|--users)
+            echo_current_users
             ;;
         -h|--help)
             usage
