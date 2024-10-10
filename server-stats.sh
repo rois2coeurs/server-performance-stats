@@ -82,6 +82,12 @@ cpu_utilization() {
     echo_progress_bar $percentage
 }
 
+mem_utilization() {
+    mem_percentage=$(ps -e -o pmem | awk '{s+=$1} END {print s}');
+    printf "${Cyan}RAM$Color_Off"
+    echo_progress_bar $mem_percentage
+}
+
 echo_progress_bar() {
     percentage=$(printf '%.0f\n' $1)
     i=$(($percentage / 2))
@@ -99,4 +105,6 @@ echo_progress_bar() {
 }
 
 cpu_utilization
+printf "\n"
+mem_utilization
 printf "\n"
