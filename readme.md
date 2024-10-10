@@ -16,3 +16,33 @@ Stretch goal: Feel free to optionally add more stats such as os version, uptime,
 # Preview
 
 ![preview image](preview.png)
+
+# Usage
+
+To use the `server-stats.sh` script, follow these steps:
+
+1. Ensure the script has execution permissions. If not, you can add them with the command:
+    ```sh
+    chmod +x server-stats.sh
+    ```
+
+2. Run the script on your Linux server using the following command:
+    ```sh
+    ./server-stats.sh
+    ```
+
+The script will display the following server performance statistics:
+- Total CPU usage
+- Total memory usage
+- Total disk usage
+- Top 5 processes by CPU usage
+- Top 5 processes by memory usage
+
+You can also use the following options for specific statistics:
+- `-c, --cpu` : Show CPU utilization
+- `-m, --mem` : Show memory utilization
+- `-d, --disk` : Show disk usage
+- `-t, --top` : Show top 5 processes by CPU and memory usage side by side
+- `--top_ram` : Show top 5 processes by memory usage
+- `--top_cpu` : Show top 5 processes by CPU usage
+- `-h, --help` : Show the help message
