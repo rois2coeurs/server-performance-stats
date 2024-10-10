@@ -75,17 +75,24 @@ On_ICyan='\033[0;106m'    # Cyan
 On_IWhite='\033[0;107m'   # White
 
 cpu_utilization() {
-    used_percentage=$(ps -e -o pcpu | awk '{s+=$1} END {print s}');
+    total_percentage=$(ps -e -o pcpu --no-headers | awk '{s+=$1} END {print s}');
+
     cpu_count=$(cat /proc/cpuinfo | grep processor | uniq | wc -l);
-    percentage=$(echo "scale=2 ; $used_percentage / $cpu_count" | bc)
-    printf "${Cyan}CPU$Color_Off"
+    percentage=$(echo "scale=2 ; $total_percentage / $cpu_count" | bc)
+
+    printf "${Cyan}CPU${Color_Off}"
     echo_progress_bar $percentage
 }
 
 mem_utilization() {
-    mem_percentage=$(ps -e -o pmem | awk '{s+=$1} END {print s}');
-    printf "${Cyan}RAM$Color_Off"
-    echo_progress_bar $mem_percentage
+    percentage=$(ps -e -o pmem --no-headers | awk '{s+=$1} END {print s}')
+
+    available=$(awk '/MemAvailable/ {print $2"K"}' /proc/meminfo | numfmt --from=iec --to=iec-i)
+    total=$(awk '/MemTotal/ {print $2"K"}' /proc/meminfo | numfmt --from=iec --to=iec-i)
+
+    printf "${Cyan}RAM${Color_Off}"
+    echo_progress_bar "$percentage"
+    printf " ${Cyan}Available $White$available ${Cyan}Total $White$total"
 }
 
 echo_progress_bar() {
