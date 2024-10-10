@@ -45,6 +45,19 @@ disk_usage() {
     printf " ${Cyan}Available $White$available ${Cyan}Used $White$used$Color_Off"
 }
 
+top_5_process_cpu() {
+    ps -e -o pcpu,comm --sort=-pcpu | head -n 6 | tail -n 5
+}
+
+top_5_process_mem() {
+    ps -e -o pmem,comm --sort=-pmem | head -n 6 | tail -n 5
+}
+
+echo_top_5_process_side_by_side() {
+    printf "${Cyan}%-36s %-36s${Color_Off}\n" "Top 5 CPU Processes" "Top 5 RAM Processes"
+    paste <(top_5_process_cpu) <(top_5_process_mem) | awk '{ printf "%-6s %-30s %-6s %-30s\n", " "$1"%", $2, $3"%", $4 }'
+}
+
 echo_progress_bar() {
     percentage=$(printf '%.0f\n' $1)
     bar_count=$((percentage / 2))
@@ -68,4 +81,5 @@ printf "\n"
 mem_utilization
 printf "\n"
 disk_usage
-printf "\n"
+printf "\n\n"
+echo_top_5_process_side_by_side
